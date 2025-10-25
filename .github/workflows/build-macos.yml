@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14   # 使用 GitHub 的 macOS 虚拟机
+    runs-on: macos-latest  # 使用 GitHub 的 macOS 虚拟机
 
     steps:
     # ---------- 第一步：检出代码 ----------
@@ -21,7 +21,7 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: '5.14.2'     # 指定 Qt 版本
-        host: macos          # 主机平台
+        host: mac         # 主机平台
         target: desktop       # 目标平台
         modules: qtbase qtmultimedia qtsvg  # 按需添加模块
 
