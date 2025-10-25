@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest   # 使用 GitHub 的 macOS 虚拟机
+    runs-on: macos-14   # 使用 GitHub 的 macOS 虚拟机
 
     steps:
     # ---------- 第一步：检出代码 ----------
