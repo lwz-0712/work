@@ -1,50 +1,30 @@
-name: Build macOS App
+name: Build macOS Qt App
 
 on:
   push:
-    branches: [ main ]      # 代码推送到 main 分支时触发
-  workflow_dispatch:       # 允许手动触发
+    branches: [ main ]
 
 jobs:
   build:
-    runs-on: macos-latest  # 使用 GitHub 的 macOS 虚拟机
+    runs-on: macos-latest  # 修正这里
+    # 或者使用具体版本：macos-13、macos-12、macos-11
 
     steps:
-    # ---------- 第一步：检出代码 ----------
     - name: Checkout code
       uses: actions/checkout@v4
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
       with:
-        submodules: true    # 如果用了子模块（如 git submodule）
+        version: '6.5.0'
+        host: macos
+        target: desktop
 
-    # ---------- 第二步：安装 Qt ----------
-    - name: Install Qt 6.5.0
-      run: |
-        # 检查可用架构
-        aqt list-qt mac desktop --arch 6.5.0
-        
-        # 检查指定架构下的可用模块
-        aqt list-qt mac desktop --modules 6.5.0 x86_64
-        
-        # 安装（使用 x86_64 架构确保兼容性）
-        aqt install-qt mac desktop 6.5.0 x86_64 \
-          --outputdir /Users/runner/work/work/Qt \
-          --modules qtbase qtmultimedia qtsvg
-
-
-    # ---------- 第三步：构建项目 ----------
-    - name: Build Release
+    - name: Build Project
       run: |
         cd src
-        
-        # 生成 Makefile（指定 release 模式）
-        qmake MyQtApp.pro CONFIG+=release
-        
-        # 编译（-j4 表示使用4线程）
+        qmake MyApp.pro
         make -j4
-        
-        # 检查是否生成 .app
-        ls -la MyQtApp.app/Contents/MacOS/
-
     # ---------- 第四步：打包 .app ----------
     - name: Package Application
       run: |
