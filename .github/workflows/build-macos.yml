@@ -23,7 +23,7 @@ jobs:
         version: '5.14.2'     # 指定 Qt 版本
         host: mac         # 主机平台
         target: desktop       # 目标平台
-        arch: 'x86_64' 
+        arch: 'arm64' 
         modules: qtbase qtmultimedia qtsvg  # 按需添加模块
 
     # ---------- 第三步：构建项目 ----------
