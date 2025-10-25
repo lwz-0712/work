@@ -31,19 +31,19 @@ jobs:
         cd src
         
         # 使用 macdeployqt 打包依赖库
-        macdeployqt MyQtApp.app -verbose=1
+        macdeployqt baojia.app -verbose=1
         
         # 创建 DMG 安装包（可选）
-        hdiutil create -volname "MyQtApp" \
-          -srcfolder MyQtApp.app \
-          -ov -format UDZO MyQtApp.dmg
+        hdiutil create -volname "baojia" \
+          -srcfolder baojia.app \
+          -ov -format UDZO baojia.dmg
 
     # ---------- 第五步：上传构建产物 ----------
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: MyQtApp-macOS
+        name: baojia-macOS
         path: |
-          src/MyQtApp.app
-          src/MyQtApp.dmg
+          src/baojia.app
+          src/baojia.dmg
         retention-days: 7    # 保留7天
