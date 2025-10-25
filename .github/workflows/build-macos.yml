@@ -23,7 +23,7 @@ jobs:
     - name: Build Project
       run: |
         cd src
-        qmake MyApp.pro
+        qmake baojia.pro
         make -j4
     # ---------- 第四步：打包 .app ----------
     - name: Package Application
