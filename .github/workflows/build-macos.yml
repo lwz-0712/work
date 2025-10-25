@@ -1,0 +1,63 @@
+name: Build macOS App
+
+on:
+  push:
+    branches: [ main ]      # 代码推送到 main 分支时触发
+  workflow_dispatch:       # 允许手动触发
+
+jobs:
+  build:
+    runs-on: macos-latest   # 使用 GitHub 的 macOS 虚拟机
+
+    steps:
+    # ---------- 第一步：检出代码 ----------
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: true    # 如果用了子模块（如 git submodule）
+
+    # ---------- 第二步：安装 Qt ----------
+    - name: Install Qt 5.14.2
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.14.2'     # 指定 Qt 版本
+        host: macos          # 主机平台
+        target: desktop       # 目标平台
+        modules: qtbase qtmultimedia qtsvg  # 按需添加模块
+
+    # ---------- 第三步：构建项目 ----------
+    - name: Build Release
+      run: |
+        cd src
+        
+        # 生成 Makefile（指定 release 模式）
+        qmake MyQtApp.pro CONFIG+=release
+        
+        # 编译（-j4 表示使用4线程）
+        make -j4
+        
+        # 检查是否生成 .app
+        ls -la MyQtApp.app/Contents/MacOS/
+
+    # ---------- 第四步：打包 .app ----------
+    - name: Package Application
+      run: |
+        cd src
+        
+        # 使用 macdeployqt 打包依赖库
+        macdeployqt MyQtApp.app -verbose=1
+        
+        # 创建 DMG 安装包（可选）
+        hdiutil create -volname "MyQtApp" \
+          -srcfolder MyQtApp.app \
+          -ov -format UDZO MyQtApp.dmg
+
+    # ---------- 第五步：上传构建产物 ----------
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: MyQtApp-macOS
+        path: |
+          src/MyQtApp.app
+          src/MyQtApp.dmg
+        retention-days: 7    # 保留7天
