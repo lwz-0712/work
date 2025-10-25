@@ -18,13 +18,18 @@ jobs:
 
     # ---------- 第二步：安装 Qt ----------
     - name: Install Qt 6.5.0
-      uses: jurplel/install-qt-action@v3
-      with:
-        version: '6.5.0'     # 指定 Qt 版本
-        host: mac         # 主机平台
-        target: desktop       # 目标平台
-        arch: 'arm64' 
-        modules: qtbase qtmultimedia qtsvg  # 按需添加模块
+      run: |
+        # 检查可用架构
+        aqt list-qt mac desktop --arch 6.5.0
+        
+        # 检查指定架构下的可用模块
+        aqt list-qt mac desktop --modules 6.5.0 x86_64
+        
+        # 安装（使用 x86_64 架构确保兼容性）
+        aqt install-qt mac desktop 6.5.0 x86_64 \
+          --outputdir /Users/runner/work/work/Qt \
+          --modules qtbase qtmultimedia qtsvg
+
 
     # ---------- 第三步：构建项目 ----------
     - name: Build Release
